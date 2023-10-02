@@ -10,11 +10,10 @@ let arrayOfTasks = [];
 // check if theres tasks in local storage
 if (localStorage.getItem("tasks")) {
     arrayOfTasks = JSON.parse(localStorage.getItem("tasks"));
-
 }
 
 // trigger get data from local storage function
-getDataToLocalStorageFrom();
+getDataFromLocalStorage();
 
 //  add task
 submit.onclick = function () {
@@ -23,6 +22,25 @@ submit.onclick = function () {
         input.value = ""; //empty input field
     }
 };
+
+// click on task element
+tasksDiv.addEventListener("click", (e) => {
+    // delete button
+    if (e.target.classList.contains("del")) {
+        //  remove task from local storage
+        deleteTaskWith(e.target.parentElement.getAttribute("data-id"));
+        //  remove element from page
+        e.target.parentElement.remove();
+    }
+    // task element
+    if (e.target.classList.contains("task")) {
+        // toggle completed for the task
+        toggleStatusTaskWith(e.target.getAttribute("data-id"));
+        //  toggle done class
+        e.target.classList.toggle("done");
+    }
+})
+
 
 function addTaskToArray(taskText) {
     // task data
@@ -35,7 +53,7 @@ function addTaskToArray(taskText) {
     arrayOfTasks.push(task);
     // console.log(arrayOfTasks)
     // add tasks to page
-    addElementsTOPageFrom(arrayOfTasks);
+    addElementsToPageFrom(arrayOfTasks);
     //  add tasks to local storage
     addDataToLocalStorageFrom(arrayOfTasks);
     // // test
@@ -43,7 +61,7 @@ function addTaskToArray(taskText) {
     // console.log(JSON.stringify(arrayOfTasks));
 }
 
-function addElementsTOPageFrom(arrayOfTasks) {
+function addElementsToPageFrom(arrayOfTasks) {
     // empty tasks div
     tasksDiv.innerHTML = "";
     // looping on array of tasks
@@ -54,8 +72,6 @@ function addElementsTOPageFrom(arrayOfTasks) {
         // check if task is done
         if (task.completed) {
             div.className = "task done";
-
-
         }
         div.setAttribute("data-id", task.id);
         div.appendChild(document.createTextNode(task.title));
@@ -76,11 +92,29 @@ function addDataToLocalStorageFrom(arrayOfTasks) {
     window.localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))
 }
 
-function getDataToLocalStorageFrom() {
+function getDataFromLocalStorage() {
     let data = window.localStorage.getItem("tasks");
     if (data) {
         let tasks = JSON.parse(data);
         // console.log(tasks);
-        addElementsTOPageFrom(tasks)
+        addElementsToPageFrom(tasks)
     }
+}
+
+function deleteTaskWith(taskId) {
+    // for (let i = 0; i < arrayOfTasks.length; i++) {
+    //     console.log(`${arrayOfTasks[i].id} === ${taskId}`)
+    // }
+    arrayOfTasks = arrayOfTasks.filter((task) => task.id != taskId);
+    addDataToLocalStorageFrom(arrayOfTasks);
+}
+
+function toggleStatusTaskWith(taskId) {
+        for (let i = 0; i < arrayOfTasks.length; i++) {
+            // console.log(`${arrayOfTasks[i].id}`);
+            if (arrayOfTasks[i].id == taskId) {
+                arrayOfTasks[i].completed == false ? (arrayOfTasks[i].completed = true) : (arrayOfTasks[i].completed == false)
+            }
+    }
+        addDataToLocalStorageFrom(arrayOfTasks);
 }
