@@ -6,6 +6,16 @@ let tasksDiv = document.querySelector(".tasks");
 //empty array to store the tasks
 let arrayOfTasks = [];
 
+
+// check if theres tasks in local storage
+if (localStorage.getItem("tasks")) {
+    arrayOfTasks = JSON.parse(localStorage.getItem("tasks"));
+
+}
+
+// trigger get data from local storage function
+getDataToLocalStorageFrom();
+
 //  add task
 submit.onclick = function () {
     if (input.value !== "") {
@@ -66,10 +76,11 @@ function addDataToLocalStorageFrom(arrayOfTasks) {
     window.localStorage.setItem("tasks", JSON.stringify(arrayOfTasks))
 }
 
-function addDataToLocalStorageFrom() {
+function getDataToLocalStorageFrom() {
     let data = window.localStorage.getItem("tasks");
     if (data) {
         let tasks = JSON.parse(data);
-        console.log(tasks);
+        // console.log(tasks);
+        addElementsTOPageFrom(tasks)
     }
 }
